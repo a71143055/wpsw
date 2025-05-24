@@ -193,7 +193,7 @@
       label, textarea {
         display: block;
         font-size: 40px;
-        border-color: black;
+        background: transparent;
       }
 
       textarea {
@@ -212,6 +212,8 @@
         align-items: center;
         position: relative;
         width: 100%;
+        border: 1px solid #000;
+        box-sizing: border-box;
       }
 
       .coordinate-input {
@@ -223,6 +225,8 @@
         font-family: monospace;
         text-align: left;
         border: none;
+        background: transparent;
+        outline: none;
       }
 
       .delete-btn {
@@ -283,9 +287,7 @@
       const leftSlider = document.getElementById("left-slider");
       const leftSliderContent = document.getElementById("left-slider-Content");
 
-      document.getElementById("left-slider").style.width = "500px"; // JavaScript로 너비 설정
-      leftSliderContent.style.width = `${leftSlider.offsetWidth-5}px`;
-
+      leftSliderContent.style.width = `${leftSlider.offsetWidth}px`;
 
       const gridSize = 2000;  // 그리드 크기 (원하는 크기로 조절 가능)
       const gridDivisions = 10000;  // 그리드 세분화 정도
