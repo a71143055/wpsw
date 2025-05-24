@@ -441,7 +441,7 @@
         newTextarea.rows = 1
 
         // X 버튼 추가 (시각적으로 내부에 표시)
-        const deleteButton = document.createElement("button");
+        const deleteButton = document.createElement("span");
         deleteButton.textContent = "X";
         deleteButton.className = "delete-btn";
 
@@ -452,7 +452,7 @@
 
         wrapper.appendChild(numberLabel);
         wrapper.appendChild(newTextarea);
-        document.getElementById("left-slider").appendChild(wrapper);
+        document.getElementById("left-slider-Content").appendChild(wrapper);
 
         // 새로운 입력칸을 기존 입력창 아래에 추가
         document.getElementById("left-slider-Content").appendChild(newTextarea);
