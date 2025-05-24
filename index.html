@@ -192,7 +192,8 @@
 
       label, textarea {
         display: block;
-        font-size: 35px;
+        font-size: 40px;
+        border-color: black;
       }
 
       textarea {
@@ -207,32 +208,26 @@
       }
 
       .coordinate-wrapper {
-        position: relative;
         display: flex;
         align-items: center;
-      }
-
-      .coordinate-number {
-        font-size: 16px;
-        font-weight: bold;
-        min-width: 40px; /* 숫자가 안정적으로 표시되도록 설정 */
-        text-align: center;
+        position: relative;
+        width: 100%;
       }
 
       .coordinate-input {
-        width: 200px;
-        border: 2px solid #000;
-        border-radius: 4px;
-        background: #f9f9f9;
+        width: calc(100% - 40px);
+        padding : 5px;/* 넉넉한 가로 너비 */
+        white-space: nowrap; /* 자동 줄바꿈 방지 */
+        overflow-x: hidden;
         resize: none;
         font-family: monospace;
-        text-align: left; /* X 버튼 공간 확보 */
+        text-align: left;
       }
 
       .delete-btn {
         position: absolute;
         right: 10px;
-        top: 50%;
+        top: 10px;
         transform: translateY(-50%);
         font-size: 18px;
         font-weight: bold;
@@ -241,7 +236,6 @@
         background: transparent;
         border: none;
       }
-
     </style>
   </head>
   <body>
@@ -440,18 +434,18 @@
         newTextarea.className = "coordinate-input";
         newTextarea.rows = 1
 
-        // X 버튼 추가 (시각적으로 내부에 표시)
         const deleteButton = document.createElement("span");
         deleteButton.textContent = "X";
         deleteButton.className = "delete-btn";
 
         // X 버튼 클릭 시 해당 입력칸 삭제
         deleteButton.addEventListener("click", function () {
-          wrapper.remove();
+          newTextarea.remove();
+          deleteButton.remove();
         });
 
-        wrapper.appendChild(numberLabel);
         wrapper.appendChild(newTextarea);
+        wrapper.appendChild(deleteButton);
         document.getElementById("left-slider-Content").appendChild(wrapper);
 
         // 새로운 입력칸을 기존 입력창 아래에 추가
@@ -493,6 +487,7 @@
           }
         });
 
+
         // 엔터 키로 새 입력칸 추가
         newTextarea.addEventListener("keydown", function(event) {
           if (event.key === "Enter") {
@@ -519,7 +514,6 @@
         renderer.render(scene, camera);
       }
       animate();
-
 
       const canvas = document.getElementById('canvas2D');
       const ctx = canvas.getContext('2d');
