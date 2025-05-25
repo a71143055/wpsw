@@ -207,23 +207,18 @@
       }
 
       .coordinate-wrapper {
-        display: flex;
-        align-items: center;
-        position: relative;
+        position: absolute;
         width: 100%;
-        border: 1px solid #000;
         box-sizing: border-box;
       }
 
       .coordinate-input {
-        width: calc(100% - 40px);
-        padding : 5px;/* 넉넉한 가로 너비 */
+        width: calc(100% - 6px);
         white-space: nowrap; /* 자동 줄바꿈 방지 */
         overflow-x: hidden;
         resize: none;
         font-family: monospace;
         text-align: left;
-        border: none;
         background: transparent;
         outline: none;
       }
@@ -238,7 +233,6 @@
         cursor: pointer;
         color: #000000;
         background: transparent;
-        border: none;
       }
     </style>
   </head>
@@ -436,7 +430,7 @@
         newTextarea.className = "coordinate-input";
         newTextarea.rows = 1
 
-        const deleteButton = document.createElement("span");
+        const deleteButton = document.createElement("div");
         deleteButton.textContent = "X";
         deleteButton.className = "delete-btn";
 
@@ -444,6 +438,7 @@
         deleteButton.addEventListener("click", function () {
           newTextarea.remove();
           deleteButton.remove();
+          wrapper.remove();
         });
 
         wrapper.appendChild(newTextarea);
