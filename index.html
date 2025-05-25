@@ -291,6 +291,23 @@
 
       // 캔버스, 렌더러, 씬, 카메라 초기화
       const canvas3D = document.getElementById('canvas3D');
+
+      function adjustCanvasSize() {
+        const canvasArea = document.querySelector("canvas");
+
+        if (canvasArea) {
+          canvasArea.style.width = window.innerWidth + "px"; // 창 너비에 맞춤
+          canvasArea.style.height = window.innerHeight + "px"; // 창 높이에 맞춤
+        }
+      }
+
+      // 페이지 로딩 시 실행
+      window.addEventListener("load", adjustCanvasSize);
+
+      // 창 크기 변경 시 자동 조정
+      window.addEventListener("resize", adjustCanvasSize);
+
+
       // canvas3D의 해상도는 고정된 값으로 설정 (ex. 화면 크기와 무관하게 고정)
       renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas3D, alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
