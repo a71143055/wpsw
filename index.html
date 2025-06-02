@@ -195,9 +195,19 @@
         font-size: 40px;
       }
 
+      .line-numbers {
+        width: 30px;
+        text-align: right;
+        padding-right: 10px;
+        border-right: 1px solid #ddd;
+        color: gray;
+      }
+
       textarea {
+        flex: 1;
         width: 100%;
         resize: none;
+        padding-left: 20px;
       }
 
       #left-slider {
@@ -419,12 +429,25 @@
         }
       });
 
+      function updateNumbers() {
+        const allWrappers = document.querySelectorAll(".coordinate-wrapper");
+        allWrappers.forEach((wrapper, index) => {
+          const numberLabel = wrapper.querySelector(".coordinate-number");
+          if (numberLabel) {
+            numberLabel.textContent = `${index + 1}`; // 인덱스를 기반으로 번호 재설정
+          }
+        });
+      }
+
       function createCoordinateInput() {
         const wrapper = document.createElement("div");
         wrapper.className = "coordinate-wrapper";
 
         const numberLabel = document.createElement("span");
         numberLabel.className = "coordinate-number";
+
+        const allTextareas = document.querySelectorAll(".coordinate-input");
+        numberLabel.textContent = `${allTextareas.length + 1}`;
 
         const newTextarea = document.createElement("textarea");
         newTextarea.className = "coordinate-input";
@@ -434,18 +457,25 @@
         deleteButton.textContent = "X";
         deleteButton.className = "delete-btn";
 
-        // X 버튼 클릭 시 해당 입력칸 삭제
         deleteButton.addEventListener("click", function () {
-          if (newTextarea.length > 1) {
-            wrapper.remove();
-            scene.remove(newTextarea.graphPoint);
+          const allTextareas = document.querySelectorAll(".coordinate-input");
+
+          if (allTextareas.length > 1) {
+            if (newTextarea.graphPoint) {
+              scene.remove(newTextarea.graphPoint);
+            }
+            newTextarea.remove()
+            deleteButton.remove();
+          } else {
+            newTextarea.value = ""; // 마지막 남은 입력칸은 초기화만 수행
+            if (newTextarea.graphPoint) {
+              scene.remove(newTextarea.graphPoint);
+            }
           }
-          else {
-            newTextarea.value = "";
-            scene.remove(newTextarea.graphPoint);
-          }
+          updateNumbers();
         });
 
+        wrapper.appendChild(numberLabel);
         wrapper.appendChild(newTextarea);
         wrapper.appendChild(deleteButton);
         document.getElementById("left-slider-Content").appendChild(wrapper);
@@ -494,7 +524,8 @@
         newTextarea.addEventListener("keydown", function(event) {
           if (event.key === "Enter") {
             event.preventDefault();
-            createCoordinateInput(); // 새 textarea 생성
+            createCoordinateInput();
+            updateNumbers();
           }
         });
 
