@@ -436,9 +436,14 @@
 
         // X 버튼 클릭 시 해당 입력칸 삭제
         deleteButton.addEventListener("click", function () {
-          newTextarea.remove();
-          deleteButton.remove();
-          wrapper.remove();
+          if (newTextarea.length > 1) {
+            wrapper.remove();
+            scene.remove(newTextarea.graphPoint);
+          }
+          else {
+            newTextarea.value = "";
+            scene.remove(newTextarea.graphPoint);
+          }
         });
 
         wrapper.appendChild(newTextarea);
