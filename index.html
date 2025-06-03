@@ -444,8 +444,8 @@
               if (newTextarea.graphPoint) {
                 scene.remove(newTextarea.graphPoint);
               }
+              newTextarea.remove();
               wrapper.remove(); // 부모 요소 삭제 (textarea + deleteButton 포함)
-              newTextarea.remove();``
             } else {
               newTextarea.value = ""; // 마지막 남은 입력칸은 삭제하지 않고 초기화
               if (newTextarea.graphPoint) {
