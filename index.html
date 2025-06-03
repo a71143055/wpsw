@@ -400,35 +400,13 @@
 
       document.addEventListener('dblclick', recenterGraph);
 
-      document.addEventListener("contextmenu", function (event) {
-        event.preventDefault(); // 기본 우클릭 메뉴 방지
-        const activeTextarea = event.target;
-
-        // 모든 textarea 목록 가져오기
-        const allTextareas = document.querySelectorAll(".coordinate-input");
-        const confirmDelete = confirm("이 입력 칸을 삭제하시겠습니까?");
-
-        // 첫 번째 입력칸만 남아 있을 때는 삭제 방지
-        if (activeTextarea && activeTextarea.tagName === "TEXTAREA") {
-          if (allTextareas.length > 1) {
-            if (confirmDelete) {
-              if (activeTextarea.graphPoint) {
-                scene.remove(activeTextarea.graphPoint); // 그래프 점 삭제
-              }
-              activeTextarea.parentNode.removeChild(activeTextarea); // 입력 칸 삭제
-
-            }
-          } else {
-            activeTextarea.value = ""; // 첫 번째 입력 칸이라면 대신 내용만 지움
-            if (confirmDelete) {
-              if (activeTextarea.graphPoint) {
-                scene.remove(activeTextarea.graphPoint); // 그래프 점 삭제
-              }
-            }
-            activeTextarea.graphPoint = null;
-          }
-        }
-      });
+      function updateNumbers() {
+        const allWrappers = document.querySelectorAll(".coordinate-wrapper");
+        allWrappers.forEach((wrapper, index) => {
+          const numberLabel = wrapper.querySelector(".coordinate-number");
+          numberLabel.textContent = `${index + 1}`; // 인덱스를 기반으로 번호 재설정
+        });
+      }
 
       function createCoordinateInput() {
         const wrapper = document.createElement("div");
@@ -436,9 +414,6 @@
 
         const numberLabel = document.createElement("span");
         numberLabel.className = "coordinate-number";
-
-        const allWrappers = document.querySelectorAll(".coordinate-wrapper");
-        numberLabel.textContent = `${allWrappers.length + 1}`;
 
         const allTextareas = document.querySelectorAll(".coordinate-input");
         numberLabel.textContent = `${allTextareas.length + 1}`;
@@ -453,7 +428,6 @@
 
         deleteButton.addEventListener("click", function () {
           const allTextareas = document.querySelectorAll(".coordinate-input");
-
           if (allTextareas.length > 1) {
             if (newTextarea.graphPoint) {
               scene.remove(newTextarea.graphPoint);
@@ -461,19 +435,13 @@
             newTextarea.remove()
             deleteButton.remove();
             numberLabel.remove();
-            document.querySelectorAll(".coordinate-wrapper").forEach((wrapper, index) => {
-              const numberLabel = wrapper.querySelector(".coordinate-number");
-              if (numberLabel) {
-                numberLabel.textContent = "";
-                numberLabel.textContent = `${index + 1}`;
-              }
-            });
           } else {
             newTextarea.value = ""; // 마지막 남은 입력칸은 초기화만 수행
             if (newTextarea.graphPoint) {
               scene.remove(newTextarea.graphPoint);
             }
           }
+          updateNumbers();
         });
 
         wrapper.appendChild(numberLabel);
@@ -516,16 +484,47 @@
             const allTextareas = document.querySelectorAll(".coordinate-input");
             if (activeTextarea && activeTextarea.tagName === "TEXTAREA" && activeTextarea.value === "" && allTextareas.length > 1) {
               activeTextarea.parentNode.removeChild(activeTextarea);
+              updateNumbers();
             }
           }
         });
 
+        document.addEventListener("contextmenu", function (event) {
+          event.preventDefault(); // 기본 우클릭 메뉴 방지
+          const activeTextarea = event.target;
+
+          // 모든 textarea 목록 가져오기
+          const allTextareas = document.querySelectorAll(".coordinate-input");
+          const confirmDelete = confirm("이 입력 칸을 삭제하시겠습니까?");
+
+          // 첫 번째 입력칸만 남아 있을 때는 삭제 방지
+          if (activeTextarea && activeTextarea.tagName === "TEXTAREA") {
+            if (allTextareas.length > 1) {
+              if (confirmDelete) {
+                if (activeTextarea.graphPoint) {
+                  scene.remove(activeTextarea.graphPoint); // 그래프 점 삭제
+                }
+                activeTextarea.parentNode.removeChild(activeTextarea); // 입력 칸 삭제
+
+              }
+            } else {
+              activeTextarea.value = ""; // 첫 번째 입력 칸이라면 대신 내용만 지움
+              if (confirmDelete) {
+                if (activeTextarea.graphPoint) {
+                  scene.remove(activeTextarea.graphPoint); // 그래프 점 삭제
+                }
+              }
+              activeTextarea.graphPoint = null;
+            }
+          }
+        });
 
         // 엔터 키로 새 입력칸 추가
         newTextarea.addEventListener("keydown", function(event) {
           if (event.key === "Enter") {
             event.preventDefault();
             createCoordinateInput();
+            updateNumbers();
           }
         });
 
