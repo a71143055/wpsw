@@ -423,6 +423,42 @@
         console.log("Graph recentered at:", center);
       }
 
+      const coordinateGroup = new THREE.Group();
+      scene.add(coordinateGroup);
+
+      function updateCoordinateGroup() {
+        const allTextareas = document.querySelectorAll(".coordinate-input");
+        const conditionTextarea = document.querySelector(".group-condition");
+        const points = [];
+
+        let groupCondition = conditionTextarea ? conditionTextarea.value.replace("group:", "").trim() : "";
+
+        allTextareas.forEach(textarea => {
+          const match = textarea.value.match(/\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/);
+          if (match) {
+            const x = parseFloat(match[3]);
+            const y = parseFloat(match[5]);
+            const z = parseFloat(match[1]);
+
+            if (!groupCondition || eval(groupCondition.replace(/x/g, x).replace(/y/g, y).replace(/z/g, z))) {
+              points.push(new THREE.Vector3(x, y, z));
+            }
+          }
+        });
+
+        while (coordinateGroup.children.length > 0) {
+          coordinateGroup.remove(coordinateGroup.children[0]);
+        }
+
+        if (points.length > 1) {
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+          const line = new THREE.Line(geometry, material);
+
+          coordinateGroup.add(line);
+        }
+      }
+
       document.addEventListener('dblclick', recenterGraph);
 
       function createCoordinateInput() {
@@ -483,6 +519,10 @@
         wrapper.appendChild(newTextarea);
         wrapper.appendChild(deleteButton);
         document.getElementById("left-slider-Content").appendChild(wrapper);
+
+        newTextarea.addEventListener("input", function () {
+          updateCoordinateGroup();
+        });
 
         // 새로운 입력칸을 기존 입력창 아래에 추가
         document.getElementById("left-slider-Content").appendChild(newTextarea);
