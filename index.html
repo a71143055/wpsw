@@ -207,7 +207,7 @@
         flex: 1;
         width: 100%;
         resize: none;
-        padding-left: 20px;
+        padding-left: 30px;
       }
 
       #left-slider {
@@ -496,6 +496,7 @@
           // 모든 textarea 목록 가져오기
           const allTextareas = document.querySelectorAll(".coordinate-input");
           const confirmDelete = confirm("이 입력 칸을 삭제하시겠습니까?");
+          const deleteButton = document.createElement("div");
 
           // 첫 번째 입력칸만 남아 있을 때는 삭제 방지
           if (activeTextarea && activeTextarea.tagName === "TEXTAREA") {
@@ -505,7 +506,7 @@
                   scene.remove(activeTextarea.graphPoint); // 그래프 점 삭제
                 }
                 activeTextarea.parentNode.removeChild(activeTextarea); // 입력 칸 삭제
-
+                deleteButton.remove()
               }
             } else {
               activeTextarea.value = ""; // 첫 번째 입력 칸이라면 대신 내용만 지움
