@@ -418,14 +418,6 @@
 
       document.addEventListener('dblclick', recenterGraph);
 
-      function updateNumbers() {
-        const allWrappers = document.querySelectorAll(".coordinate-wrapper");
-        allWrappers.forEach((wrapper, index) => {
-          const numberLabel = wrapper.querySelector(".coordinate-number");
-          numberLabel.textContent = `${index + 1}`; // 인덱스를 기반으로 번호 재설정
-        });
-      }
-
       function createCoordinateInput() {
         const wrapper = document.createElement("div");
         wrapper.className = "coordinate-wrapper";
@@ -444,6 +436,34 @@
         deleteButton.textContent = "X";
         deleteButton.className = "delete-btn";
 
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Backspace") {
+            const activeTextarea = document.activeElement;
+            const allTextareas = document.querySelectorAll(".coordinate-input");
+
+            if (activeTextarea && activeTextarea.tagName === "TEXTAREA" && activeTextarea.value === "" && allTextareas.length > 1) {
+              const parentElement = activeTextarea.closest(".coordinate-wrapper"); // 올바른 부모 요소 선택
+
+              if (parentElement) {
+                const deleteButton = parentElement.querySelector(".delete-btn"); // X 버튼 찾기
+
+                if (deleteButton) {
+                  deleteButton.remove(); // X 버튼 삭제
+                }
+
+                parentElement.remove(); // wrapper 삭제 (textarea 포함)
+              }
+            } else if (allTextareas.length === 1) {
+              activeTextarea.value = ""; // 마지막 남은 입력칸은 삭제하지 않고 초기화
+              if (activeTextarea.graphPoint) {
+                scene.remove(activeTextarea.graphPoint);
+              }
+            }
+          }
+        });
+
+
+
         deleteButton.addEventListener("click", function () {
           const allTextareas = document.querySelectorAll(".coordinate-input");
           if (allTextareas.length > 1) {
@@ -452,14 +472,12 @@
             }
             newTextarea.remove()
             deleteButton.remove();
-            numberLabel.remove();
           } else {
             newTextarea.value = ""; // 마지막 남은 입력칸은 초기화만 수행
             if (newTextarea.graphPoint) {
               scene.remove(newTextarea.graphPoint);
             }
           }
-          updateNumbers();
         });
 
         wrapper.appendChild(newTextarea);
@@ -493,19 +511,6 @@
           }
         });
 
-        document.addEventListener("keydown", function (event) {
-          if (event.key === "Backspace") {
-            const activeTextarea = document.activeElement;
-
-            // 입력란이 textarea이고 첫 번째 것이 아니며 내용이 비어있으면 삭제
-            const allTextareas = document.querySelectorAll(".coordinate-input");
-            if (activeTextarea && activeTextarea.tagName === "TEXTAREA" && activeTextarea.value === "" && allTextareas.length > 1) {
-              activeTextarea.parentNode.removeChild(activeTextarea);
-              updateNumbers();
-            }
-          }
-        });
-
         document.addEventListener("contextmenu", function (event) {
           event.preventDefault(); // 기본 우클릭 메뉴 방지
           const activeTextarea = event.target;
@@ -513,7 +518,6 @@
           // 모든 textarea 목록 가져오기
           const allTextareas = document.querySelectorAll(".coordinate-input");
           const confirmDelete = confirm("이 입력 칸을 삭제하시겠습니까?");
-          const deleteButton = document.createElement("div");
 
           // 첫 번째 입력칸만 남아 있을 때는 삭제 방지
           if (activeTextarea && activeTextarea.tagName === "TEXTAREA") {
@@ -523,7 +527,6 @@
                   scene.remove(activeTextarea.graphPoint); // 그래프 점 삭제
                 }
                 activeTextarea.parentNode.removeChild(activeTextarea); // 입력 칸 삭제
-                deleteButton.remove()
               }
             } else {
               activeTextarea.value = ""; // 첫 번째 입력 칸이라면 대신 내용만 지움
