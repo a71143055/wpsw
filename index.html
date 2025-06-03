@@ -416,6 +416,7 @@
                 scene.remove(activeTextarea.graphPoint); // 그래프 점 삭제
               }
               activeTextarea.parentNode.removeChild(activeTextarea); // 입력 칸 삭제
+
             }
           } else {
             activeTextarea.value = ""; // 첫 번째 입력 칸이라면 대신 내용만 지움
@@ -429,22 +430,15 @@
         }
       });
 
-      function updateNumbers() {
-        const allWrappers = document.querySelectorAll(".coordinate-wrapper");
-        allWrappers.forEach((wrapper, index) => {
-          const numberLabel = wrapper.querySelector(".coordinate-number");
-          if (numberLabel) {
-            numberLabel.textContent = `${index + 1}`; // 인덱스를 기반으로 번호 재설정
-          }
-        });
-      }
-
       function createCoordinateInput() {
         const wrapper = document.createElement("div");
         wrapper.className = "coordinate-wrapper";
 
         const numberLabel = document.createElement("span");
         numberLabel.className = "coordinate-number";
+
+        const allWrappers = document.querySelectorAll(".coordinate-wrapper");
+        numberLabel.textContent = `${allWrappers.length + 1}`;
 
         const allTextareas = document.querySelectorAll(".coordinate-input");
         numberLabel.textContent = `${allTextareas.length + 1}`;
@@ -467,13 +461,19 @@
             newTextarea.remove()
             deleteButton.remove();
             numberLabel.remove();
+            document.querySelectorAll(".coordinate-wrapper").forEach((wrapper, index) => {
+              const numberLabel = wrapper.querySelector(".coordinate-number");
+              if (numberLabel) {
+                numberLabel.textContent = "";
+                numberLabel.textContent = `${index + 1}`;
+              }
+            });
           } else {
             newTextarea.value = ""; // 마지막 남은 입력칸은 초기화만 수행
             if (newTextarea.graphPoint) {
               scene.remove(newTextarea.graphPoint);
             }
           }
-          updateNumbers();
         });
 
         wrapper.appendChild(numberLabel);
@@ -516,7 +516,6 @@
             const allTextareas = document.querySelectorAll(".coordinate-input");
             if (activeTextarea && activeTextarea.tagName === "TEXTAREA" && activeTextarea.value === "" && allTextareas.length > 1) {
               activeTextarea.parentNode.removeChild(activeTextarea);
-              updateNumbers();
             }
           }
         });
@@ -527,7 +526,6 @@
           if (event.key === "Enter") {
             event.preventDefault();
             createCoordinateInput();
-            updateNumbers();
           }
         });
 
