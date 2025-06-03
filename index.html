@@ -322,17 +322,24 @@
       scene.add(gridHelperXZ);
       scene.add(gridHelperXY);
 
-      const gridSize_black = 2000;  // 그리드 크기 (원하는 크기로 조절 가능)
+      const gridSize_black = 2000;  // 그리드 크기
       const gridDivisions_black = 2000;  // 그리드 세분화 정도
 
-      // XY 평면에 격자 추가 (Z축을 기준으로 회전하여 배치)
-      const gridHelperXY_black = new THREE.GridHelper(gridSize_black, gridDivisions_black);
-      gridHelperXY_black.rotation.y = Math.PI / 2; // X-Y 평면에 배치되도록 회전
+      // 검은색 재질을 적용한 GridHelper
+      const blackGridMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
 
-      // XZ 평면에도 격자 추가
+      // XY 평면에 검은색 격자 추가
+      const gridHelperXY_black = new THREE.GridHelper(gridSize_black, gridDivisions_black);
+      gridHelperXY_black.material = blackGridMaterial; // 검은색 적용
+      gridHelperXY_black.rotation.y = Math.PI / 2; // X-Y 평면에 배치
+
+      // XZ 평면에도 검은색 격자 추가
       const gridHelperXZ_black = new THREE.GridHelper(gridSize_black, gridDivisions_black);
+      gridHelperXZ_black.material = blackGridMaterial; // 검은색 적용
+
       scene.add(gridHelperXZ_black);
       scene.add(gridHelperXY_black);
+
 
       // 좌표축 추가 (AxesHelper)
       const axesHelper = new THREE.AxesHelper(1000);
