@@ -436,27 +436,20 @@
         deleteButton.textContent = "X";
         deleteButton.className = "delete-btn";
 
-        document.addEventListener("keydown", function (event) {
-          if (event.key === "Backspace") {
-            const activeTextarea = document.activeElement;
+        newTextarea.addEventListener("keydown", function (event) {
+          if (event.key === "Backspace" && newTextarea.value === "") {
             const allTextareas = document.querySelectorAll(".coordinate-input");
 
-            if (activeTextarea && activeTextarea.tagName === "TEXTAREA" && activeTextarea.value === "" && allTextareas.length > 1) {
-              const parentElement = activeTextarea.closest(".coordinate-wrapper"); // 올바른 부모 요소 선택
-
-              if (parentElement) {
-                const deleteButton = parentElement.querySelector(".delete-btn"); // X 버튼 찾기
-
-                if (deleteButton) {
-                  deleteButton.remove(); // X 버튼 삭제
-                }
-
-                parentElement.remove(); // wrapper 삭제 (textarea 포함)
+            if (allTextareas.length > 1) {
+              if (newTextarea.graphPoint) {
+                scene.remove(newTextarea.graphPoint);
               }
-            } else if (allTextareas.length === 1) {
-              activeTextarea.value = ""; // 마지막 남은 입력칸은 삭제하지 않고 초기화
-              if (activeTextarea.graphPoint) {
-                scene.remove(activeTextarea.graphPoint);
+              wrapper.remove(); // 부모 요소 삭제 (textarea + deleteButton 포함)
+              newTextarea.remove();``
+            } else {
+              newTextarea.value = ""; // 마지막 남은 입력칸은 삭제하지 않고 초기화
+              if (newTextarea.graphPoint) {
+                scene.remove(newTextarea.graphPoint);
               }
             }
           }
@@ -545,7 +538,6 @@
           if (event.key === "Enter") {
             event.preventDefault();
             createCoordinateInput();
-            updateNumbers();
           }
         });
 
