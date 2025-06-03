@@ -515,6 +515,7 @@
             const allTextareas = document.querySelectorAll(".coordinate-input");
             if (activeTextarea && activeTextarea.tagName === "TEXTAREA" && activeTextarea.value === "" && allTextareas.length > 1) {
               activeTextarea.parentNode.removeChild(activeTextarea);
+              updateNumbers();
             }
           }
         });
