@@ -418,6 +418,37 @@
 
       document.addEventListener('dblclick', recenterGraph);
 
+      const coordinateGroup = new THREE.Group();
+      scene.add(coordinateGroup);
+
+      function updateCoordinateGroup() {
+        const allTextareas = document.querySelectorAll(".coordinate-input");
+        const points = [];
+
+        allTextareas.forEach(textarea => {
+          const match = textarea.value.match(/\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/);
+          if (match) {
+            const x = parseFloat(match[3]);
+            const y = parseFloat(match[5]);
+            const z = parseFloat(match[1]);
+
+            points.push(new THREE.Vector3(x, y, z));
+          }
+        });
+
+        while (coordinateGroup.children.length > 0) {
+          coordinateGroup.remove(coordinateGroup.children[0]); // 기존 요소 제거
+        }
+
+        if (points.length > 1) {
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+          const line = new THREE.Line(geometry, material);
+
+          coordinateGroup.add(line); // 그룹에 선 추가
+        }
+      }
+
       function createCoordinateInput() {
         const wrapper = document.createElement("div");
         wrapper.className = "coordinate-wrapper";
