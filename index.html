@@ -260,7 +260,8 @@
       }
 
       .graphPoint.selected {
-        outline: 5px solid rgba(0, 0, 255, 0.5); /* 선택된 점의 테두리 */
+        outline: 5px solid rgba(255, 0, 0, 0.7); /* 선택된 점의 테두리 */
+        background-color: yellow;
       }
 
     </style>
@@ -937,6 +938,13 @@
           const selectedContent = this.dataset.content;
           switch (selectedContent) {
             case "선택" :
+              const graphPoints = document.querySelectorAll(".graphPoint");
+              graphPoints.forEach(point => {
+                point.addEventListener("click", function () {
+                  document.querySelectorAll(".graphPoint.selected").forEach(p => p.classList.remove("selected"));
+                  point.classList.add("selected");
+                });
+              });
               break;
             case "자르기" :
               break;
