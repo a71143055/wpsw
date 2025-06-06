@@ -515,6 +515,9 @@
 
             graphPoint.position.set(x, y, z);
             scene.add(graphPoint);
+
+            enablePointSelection(graphPoint);
+
             this.graphPoint = graphPoint;
           } else {
             if (this.graphPoint) {
@@ -552,6 +555,16 @@
             }
           }
         });
+
+        function enablePointSelection(graphPoint) {
+          graphPoint.addEventListener("click", function () {
+            // 기존 선택된 점 해제
+            document.querySelectorAll(".graphPoint.selected").forEach(p => p.classList.remove("selected"));
+
+            // 선택된 점 표시
+            graphPoint.classList.add("selected");
+          });
+        }
 
         // 엔터 키로 새 입력칸 추가
         newTextarea.addEventListener("keydown", function(event) {
@@ -923,19 +936,7 @@
 
           const selectedContent = this.dataset.content;
           switch (selectedContent) {
-            case "선택":
-              // 점을 선택하는 로직 개선
-              const graphPoints = document.querySelectorAll(".graphPoint");
-              graphPoints.forEach(point => {
-                point.addEventListener("click", function () {
-                  if (point.classList.contains("selected")) {
-                    point.classList.remove("selected");
-                  } else {
-                    document.querySelectorAll(".graphPoint.selected").forEach(p => p.classList.remove("selected"));
-                    point.classList.add("selected");
-                  }
-                });
-              });
+            case "선택" :
               break;
             case "자르기" :
               break;
