@@ -917,26 +917,25 @@
         console.log("버퍼 생성 완료!");
       }
 
-      function enablePointSelection(point) {
-        point.addEventListener("click", function () {
-          if (point.classList.contains("selected")) {
-            point.classList.remove("selected");
-          } else {
-            document.querySelectorAll(".graphPoint.selected").forEach(p => p.classList.remove("selected"));
-            point.classList.add("selected");
-          }
-        });
-      }
-
       document.querySelectorAll('.navbar2 a').forEach(link => {
         link.addEventListener('click', function(event) {
           event.preventDefault();
 
           const selectedContent = this.dataset.content;
           switch (selectedContent) {
-            case "선택" :
-              const graphPoint = document.querySelector(".graphPoint.selected"); // Example selector
-              if (graphPoint) enablePointSelection(graphPoint);
+            case "선택":
+              // 점을 선택하는 로직 개선
+              const graphPoints = document.querySelectorAll(".graphPoint");
+              graphPoints.forEach(point => {
+                point.addEventListener("click", function () {
+                  if (point.classList.contains("selected")) {
+                    point.classList.remove("selected");
+                  } else {
+                    document.querySelectorAll(".graphPoint.selected").forEach(p => p.classList.remove("selected"));
+                    point.classList.add("selected");
+                  }
+                });
+              });
               break;
             case "자르기" :
               break;
