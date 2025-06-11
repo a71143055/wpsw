@@ -494,6 +494,15 @@
           }
         });
 
+        newTextarea.addEventListener("keydown", function (event) {
+          if (event.key === "Backspace" && newTextarea.value === "") {
+            if (newTextarea.graphPoint) {
+              scene.remove(newTextarea.graphPoint);
+            }
+            wrapper.remove(); // 좌표 삭제
+          }
+        });
+
         wrapper.appendChild(newTextarea);
         wrapper.appendChild(deleteButton);
         document.getElementById("left-slider-Content").appendChild(wrapper);
@@ -508,6 +517,10 @@
             const x = parseFloat(match[3]);
             const y = parseFloat(match[5]);
             const z = parseFloat(match[1]);
+
+            if (this.graphPoint) {
+              scene.remove(this.graphPoint); // 기존 좌표 삭제
+            }
 
             const graphPoint = new THREE.Mesh(
                     new THREE.SphereGeometry(0.05),
