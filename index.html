@@ -521,7 +521,7 @@
             const x = parseFloat(match[3]);
             const y = parseFloat(match[5]);
             const z = parseFloat(match[1]);
-            const groupName = match[6];
+            const groupName = match[6] || "default";
 
             if (!coordinateGroups[groupName]) {
               coordinateGroups[groupName] = [];
