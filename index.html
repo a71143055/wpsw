@@ -522,9 +522,9 @@
             const z = parseFloat(match[1]);
             const groupName = match[6];
 
-              graphPoint.position.set(x, y, z);
-              scene.add(graphPoint);
-              newTextarea.graphPoint = graphPoint;
+            graphPoint.position.set(x, y, z);
+            scene.add(graphPoint);
+            newTextarea.graphPoint = graphPoint;
 
             if (groupName) {
               if (!coordinateGroups[groupName]) {
