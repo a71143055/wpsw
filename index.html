@@ -522,10 +522,6 @@
             const z = parseFloat(match[1]);
             const groupName = match[6];
 
-              graphPoint.position.set(x, y, z);
-              scene.add(graphPoint);
-              newTextarea.graphPoint = graphPoint;
-
             if (!coordinateGroups[groupName]) {
               coordinateGroups[groupName] = [];
               sceneGroups[groupName] = new THREE.Group();
@@ -544,7 +540,6 @@
 
             graphPoint.position.set(x, y, z);
             scene.add(graphPoint);
-            newTextarea.graphPoint = graphPoint;
 
             coordinateGroups[groupName].push(graphPoint);
 
@@ -575,6 +570,10 @@
                 // 그룹이 없을 경우 개별적으로 관리
                 independentPoints.push(graphPoint);
             }
+
+            enablePointSelection(graphPoint);
+
+            this.graphPoint = graphPoint;
           } else {
             if (this.graphPoint) {
               scene.remove(this.graphPoint);
