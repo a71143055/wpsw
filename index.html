@@ -556,7 +556,7 @@
                     connectedPairs[groupName].add(pairKey); // 연결 정보 저장
 
                     const geometry = new THREE.BufferGeometry().setFromPoints([points[i], points[j]]);
-                    const material = new THREE.LineBasicMaterial({color: 0x00ff00});
+                    const material = new THREE.LineBasicMaterial({color: 0x000000});
                     const line = new THREE.Line(geometry, material);
 
                     sceneGroups[groupName].add(line);
