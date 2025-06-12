@@ -522,52 +522,51 @@
             const z = parseFloat(match[1]);
             const groupName = match[6];
 
-            if (groupName) {
-              if (!coordinateGroups[groupName]) {
-                coordinateGroups[groupName] = [];
-                sceneGroups[groupName] = new THREE.Group();
-                scene.add(sceneGroups[groupName]);
-                connectedPairs[groupName] = new Set(); // 중복 연결 방지용
-              }
+            if (!coordinateGroups[groupName]) {
+              coordinateGroups[groupName] = [];
+              sceneGroups[groupName] = new THREE.Group();
+              scene.add(sceneGroups[groupName]);
+              connectedPairs[groupName] = new Set(); // 중복 연결 방지용
+            }
 
-              if (this.graphPoint) {
-                scene.remove(this.graphPoint); // 기존 좌표 삭제
-              }
+            if (this.graphPoint) {
+              scene.remove(this.graphPoint); // 기존 좌표 삭제
+            }
 
-              const graphPoint = new THREE.Mesh(
-                new THREE.SphereGeometry(0.05),
-                new THREE.MeshBasicMaterial({ color: 0x000000 })
-              );
+            const graphPoint = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.05),
+                    new THREE.MeshBasicMaterial({ color: 0x000000 })
+            );
 
-              graphPoint.position.set(x, y, z);
-              scene.add(graphPoint);
+            graphPoint.position.set(x, y, z);
+            scene.add(graphPoint);
 
-              coordinateGroups[groupName].push(graphPoint);
+            coordinateGroups[groupName].push(graphPoint);
 
-              const points = coordinateGroups[groupName].map(point => point.position);
+            const points = coordinateGroups[groupName].map(point => point.position);
 
-              while (sceneGroups[groupName].children.length > 0) {
+            while (sceneGroups[groupName].children.length > 0) {
                 sceneGroups[groupName].remove(sceneGroups[groupName].children[0]);
-              }
+            }
 
-              if (points.length > 1) {
-                for (let i = 0; i < points.length - 1; i++) {
-                  for (let j = i + 1; j < points.length; j++) {
-                    const pairKey = `${points[i].x},${points[i].y},${points[i].z}-${points[j].x},${points[j].y},${points[j].z}`;
-                    const reversePairKey = `${points[j].x},${points[j].y},${points[j].z}-${points[i].x},${points[i].y},${points[i].z}`;
+            if (points.length > 1) {
+              for (let i = 0; i < points.length - 1; i++) {
+                for (let j = i + 1; j < points.length; j++) {
+                  const pairKey = `${points[i].x},${points[i].y},${points[i].z}-${points[j].x},${points[j].y},${points[j].z}`;
+                  const reversePairKey = `${points[j].x},${points[j].y},${points[j].z}-${points[i].x},${points[i].y},${points[i].z}`;
 
-                    if (!connectedPairs[groupName].has(pairKey) && !connectedPairs[groupName].has(reversePairKey)) {
-                      connectedPairs[groupName].add(pairKey); // 연결 정보 저장
+                  if (!connectedPairs[groupName].has(pairKey) && !connectedPairs[groupName].has(reversePairKey)) {
+                    connectedPairs[groupName].add(pairKey); // 연결 정보 저장
 
-                      const geometry = new THREE.BufferGeometry().setFromPoints([points[i], points[j]]);
-                      const material = new THREE.LineBasicMaterial({color: 0x000000});
-                      const line = new THREE.Line(geometry, material);
-                      sceneGroups[groupName].add(line);
-                    }
+                    const geometry = new THREE.BufferGeometry().setFromPoints([points[i], points[j]]);
+                    const material = new THREE.LineBasicMaterial({color: 0x000000});
+                    const line = new THREE.Line(geometry, material);
+
+                    sceneGroups[groupName].add(line);
                   }
                 }
               }
-            } else {
+            }  else {
                 // 그룹이 없을 경우 개별적으로 관리
                 independentPoints.push(graphPoint);
             }
