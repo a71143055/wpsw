@@ -442,6 +442,7 @@
       const coordinateGroups = {}; // 그룹별 좌표 저장
       const sceneGroups = {}; // Three.js 그룹 저장
       const connectedPairs = {}; // 이미 연결된 좌표 쌍 저장 (중복 방지)
+      const independentPoints = [];
 
       function createCoordinateInput() {
         const wrapper = document.createElement("div");
@@ -565,11 +566,10 @@
                   }
                 }
               }
+            }  else {
+                // 그룹이 없을 경우 개별적으로 관리
+                independentPoints.push(graphPoint);
             }
-
-            enablePointSelection(graphPoint);
-
-            this.graphPoint = graphPoint;
           } else {
             if (this.graphPoint) {
               scene.remove(this.graphPoint);
