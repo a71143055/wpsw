@@ -534,19 +534,6 @@
                 connectedPairs[groupName] = new Set(); // 중복 연결 방지용
               }
 
-              if (this.graphPoint) {
-                scene.remove(this.graphPoint); // 기존 좌표 삭제
-              }
-
-              const graphPoint = new THREE.Mesh(
-                      new THREE.SphereGeometry(0.05),
-                      new THREE.MeshBasicMaterial({ color: 0x000000 })
-              );
-
-              graphPoint.position.set(x, y, z);
-              scene.add(graphPoint);
-              newTextarea.graphPoint = graphPoint;
-
               coordinateGroups[groupName].push(graphPoint);
 
               const points = coordinateGroups[groupName].map(point => point.position);
