@@ -594,9 +594,15 @@
           const names = inputText.split(',').map(name => name.trim());
           const validPoints = names
                   .map(name => graphPoints[name])
-                  .filter(point => point);
+                  .filter(point => {
+                    if (!point) console.warn(`좌표명 '${name}'에 해당하는 점이 없습니다.`);
+                    return point;
+                  });
 
-          if (validPoints.length < 2) return;
+          if (validPoints.length < 2) {
+            console.warn("연결 가능한 점이 2개 미만입니다.");
+            return;
+          }
 
           const group = new THREE.Group();
 
@@ -605,7 +611,7 @@
             const p2 = validPoints[i + 1].position;
 
             const geometry = new THREE.BufferGeometry().setFromPoints([p1, p2]);
-            const material = new THREE.LineBasicMaterial({ color: 0x00aaff });
+            const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
             const line = new THREE.Line(geometry, material);
 
             group.add(line);
@@ -613,6 +619,7 @@
 
           scene.add(group);
         }
+
 
         // 엔터 키로 새 입력칸 추가
         newTextarea.addEventListener("keydown", function(event) {
