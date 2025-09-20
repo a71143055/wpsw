@@ -515,7 +515,7 @@
         const graphPoints = {};
 
         // 좌표 입력 즉시 반영
-        newTextarea.addEventListener("input", function() {
+        newTextarea.addEventListener("input", function(e) {
           const value = e.target.value;
 
           // 좌표명 리스트인지 확인 (예: A1,B7,C3)
