@@ -461,6 +461,11 @@
         deleteButton.textContent = "X";
         deleteButton.className = "delete-btn";
 
+        newTextarea.addEventListener("input", function (e) {
+          connectPointsByNames(e.target.value);
+        });
+
+
         newTextarea.addEventListener("keydown", function (event) {
           if (event.key === "Backspace" && newTextarea.value === "") {
             const allTextareas = document.querySelectorAll(".coordinate-input");
