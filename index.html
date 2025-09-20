@@ -453,6 +453,10 @@
         const allTextareas = document.querySelectorAll(".coordinate-input");
         numberLabel.textContent = `${allTextareas.length + 1}`;
 
+        document.getElementById("coordinate-input").addEventListener("input", function (e) {
+          connectPointsByNames(e.target.value);
+        });
+
         const newTextarea = document.createElement("textarea");
         newTextarea.className = "coordinate-input";
         newTextarea.rows = 1
