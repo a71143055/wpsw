@@ -514,7 +514,9 @@
 
         // 좌표 입력 즉시 반영
         newTextarea.addEventListener("input", function() {
-          const match = newTextarea.value.match(/([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/g);
+          const match = newTextarea.value.match(/([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/g
+
+          );
           if (match) {
             const x = parseFloat(match[3]);
             const y = parseFloat(match[5]);
