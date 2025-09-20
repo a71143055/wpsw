@@ -516,7 +516,7 @@
         newTextarea.addEventListener("input", function() {
           const match = newTextarea.value.match(/([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/g);
           if (match) {
-            const name = match[1]
+            const name = match[0];
             const x = parseFloat(match[3]);
             const y = parseFloat(match[5]);
             const z = parseFloat(match[1]);
