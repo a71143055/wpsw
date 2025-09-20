@@ -518,10 +518,10 @@
 
           );
           if (match) {
-            const x = parseFloat(match[3]);
-            const y = parseFloat(match[5]);
-            const z = parseFloat(match[1]);
-            const groupName = match[6];
+            const x = parseFloat(match[4]);
+            const y = parseFloat(match[6]);
+            const z = parseFloat(match[2]);
+            const groupName = match[0];
 
             const graphPoint = new THREE.Mesh(
                     new THREE.SphereGeometry(0.05),
