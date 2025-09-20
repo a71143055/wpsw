@@ -461,11 +461,6 @@
         deleteButton.textContent = "X";
         deleteButton.className = "delete-btn";
 
-        newTextarea.addEventListener("input", function (e) {
-          connectPointsByNames(e.target.value);
-        });
-
-
         newTextarea.addEventListener("keydown", function (event) {
           if (event.key === "Backspace" && newTextarea.value === "") {
             const allTextareas = document.querySelectorAll(".coordinate-input");
@@ -521,6 +516,14 @@
 
         // 좌표 입력 즉시 반영
         newTextarea.addEventListener("input", function() {
+          const value = e.target.value;
+
+          // 좌표명 리스트인지 확인 (예: A1,B7,C3)
+          if (/^([A-Z]+\d+(,\s*[A-Z]+\d+)*)$/.test(value.trim())) {
+            connectPointsByNames(value);
+            return;
+          }
+
           const regex = /([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
           const match = regex.exec(newTextarea.value);
 
