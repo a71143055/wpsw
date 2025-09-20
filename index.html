@@ -607,6 +607,9 @@
           scene.add(group);
         }
 
+        document.getElementById("coordinate-input").addEventListener("input", function (e) {
+          connectPointsByNames(e.target.value);
+        });
 
         // 엔터 키로 새 입력칸 추가
         newTextarea.addEventListener("keydown", function(event) {
