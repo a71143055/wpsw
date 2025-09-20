@@ -512,6 +512,8 @@
         // 새로운 입력칸을 기존 입력창 아래에 추가
         document.getElementById("left-slider-Content").appendChild(newTextarea);
 
+        const graphPoints = {};
+
         // 좌표 입력 즉시 반영
         newTextarea.addEventListener("input", function() {
           const regex = /([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
@@ -532,6 +534,7 @@
             scene.add(graphPoint);
             newTextarea.graphPoint = graphPoint;
 
+            graphPoints[name] = graphPoint;
           } else {
             if (newTextarea.graphPoint) {
               scene.remove(newTextarea.graphPoint);
@@ -579,6 +582,31 @@
             graphPoint.classList.add("selected");
           });
         }
+
+        function connectPointsByNames(inputText) {
+          const names = inputText.split(',').map(name => name.trim());
+          const validPoints = names
+                  .map(name => graphPoints[name])
+                  .filter(point => point);
+
+          if (validPoints.length < 2) return;
+
+          const group = new THREE.Group();
+
+          for (let i = 0; i < validPoints.length - 1; i++) {
+            const p1 = validPoints[i].position;
+            const p2 = validPoints[i + 1].position;
+
+            const geometry = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+            const material = new THREE.LineBasicMaterial({ color: 0x00aaff });
+            const line = new THREE.Line(geometry, material);
+
+            group.add(line);
+          }
+
+          scene.add(group);
+        }
+
 
         // 엔터 키로 새 입력칸 추가
         newTextarea.addEventListener("keydown", function(event) {
