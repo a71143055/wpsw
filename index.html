@@ -513,13 +513,13 @@
         document.getElementById("left-slider-Content").appendChild(newTextarea);
 
         // 좌표 입력 즉시 반영
-        newTextarea.addEventListener("input", function() {
-          const match = newTextarea.value.match(/([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/g);
+        newTextarea.addEventListener("input", function () {
+          const match = newTextarea.value.match(/([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/);
           if (match) {
-            const name = match[1];
-            const x = parseFloat(match[4]);
-            const y = parseFloat(match[6]);
-            const z = parseFloat(match[2]);
+            const name = match[1]; // 좌표명: A1, B7 등
+            const x = parseFloat(match[2]);
+            const y = parseFloat(match[4]);
+            const z = parseFloat(match[6]);
 
             const graphPoint = new THREE.Mesh(
                     new THREE.SphereGeometry(0.05),
@@ -530,47 +530,16 @@
             scene.add(graphPoint);
             newTextarea.graphPoint = graphPoint;
 
-            if (!groupName) {
-              return; // 그룹이 없으면 연결 X
+            // 좌표명으로 저장
+            graphPoints[name] = graphPoint;
+          } else {
+            if (newTextarea.graphPoint) {
+              scene.remove(newTextarea.graphPoint);
+              newTextarea.graphPoint = null;
             }
-
-            if (!coordinateGroups[groupName]) {
-              coordinateGroups[groupName] = [];
-              sceneGroups[groupName] = new THREE.Group();
-              scene.add(sceneGroups[groupName]);
-              connectedPairs[groupName] = new Set(); // 중복 연결 방지용
-            }
-
-            coordinateGroups[groupName].push(graphPoint);
-
-            coordinateGroups[groupName].push(graphPoint);
-
-            const points = coordinateGroups[groupName].map(point => point.position);
-            while (sceneGroups[groupName].children.length > 0) {
-                sceneGroups[groupName].remove(sceneGroups[groupName].children[0]);
-            }
-
-            for (let i = 0; i < points.length - 1; i++) {
-              for (let j = i + 1; j < points.length; j++) {
-                const pairKey = `${points[i].x},${points[i].y},${points[i].z}-${points[j].x},${points[j].y},${points[j].z}`;
-                const reversePairKey = `${points[j].x},${points[j].y},${points[j].z}-${points[i].x},${points[i].y},${points[i].z}`;
-
-                if (!connectedPairs[groupName].has(pairKey) && !connectedPairs[groupName].has(reversePairKey)) {
-                  connectedPairs[groupName].add(pairKey); // 연결 정보 저장
-
-                  const geometry = new THREE.BufferGeometry().setFromPoints([points[i], points[j]]);
-                  const material = new THREE.LineBasicMaterial({color: 0x000000});
-                  const line = new THREE.Line(geometry, material);
-
-                  sceneGroups[groupName].add(line);
-                }
-              }
-            }
-          }
-          else {
-            scene.remove(newTextarea.graphPoint);
           }
         });
+
 
         document.addEventListener("contextmenu", function (event) {
           event.preventDefault(); // 기본 우클릭 메뉴 방지
