@@ -512,23 +512,24 @@
         // 새로운 입력칸을 기존 입력창 아래에 추가
         document.getElementById("left-slider-Content").appendChild(newTextarea);
 
-        const graphPoints = {};
+        const graphPoints = {}; // 좌표명 → 점 객체 저장
 
-        // 좌표 입력 즉시 반영
-        newTextarea.addEventListener("input", function(e) {
-          const value = e.target.value;
+        newTextarea.addEventListener("input", function (e) {
+          const value = e.target.value.trim();
 
-          // 좌표명 리스트인지 확인 (예: A1,B7,C3)
-          if (/^([A-Z]+\d+\s*(,\s*[A-Z]+\d+\s*)*)$/.test(value.trim())) {
+          // 1️⃣ 좌표명 리스트인지 확인 (예: A1,B7,C3)
+          const isCoordinateList = /^([A-Z]+\d+\s*(,\s*[A-Z]+\d+\s*)*)$/.test(value);
+          if (isCoordinateList) {
             connectPointsByNames(value);
             return;
           }
 
+          // 2️⃣ 좌표 생성 형식인지 확인 (예: A1(1,2,3))
           const regex = /([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
-          const match = regex.exec(newTextarea.value);
+          const match = regex.exec(value);
 
           if (match) {
-            const name = match[1]; // 좌표명: A1, B7 등
+            const name = match[1];
             const x = parseFloat(match[2]);
             const y = parseFloat(match[4]);
             const z = parseFloat(match[6]);
@@ -594,13 +595,10 @@
           const names = inputText.split(',').map(name => name.trim());
           const validPoints = names
                   .map(name => graphPoints[name])
-                  .filter(point => {
-                    if (!point) console.warn(`좌표명 '${name}'에 해당하는 점이 없습니다.`);
-                    return point;
-                  });
+                  .filter(point => point);
 
           if (validPoints.length < 2) {
-            console.warn("연결 가능한 점이 2개 미만입니다.");
+            console.warn("연결 가능한 점이 2개 이상 있어야 합니다.");
             return;
           }
 
@@ -611,7 +609,7 @@
             const p2 = validPoints[i + 1].position;
 
             const geometry = new THREE.BufferGeometry().setFromPoints([p1, p2]);
-            const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+            const material = new THREE.LineBasicMaterial({ color: 0x00aaff });
             const line = new THREE.Line(geometry, material);
 
             group.add(line);
