@@ -533,22 +533,19 @@
             const y = parseFloat(match[4]);
             const z = parseFloat(match[6]);
 
-            // ✅ 중복 체크
-            if (graphPoints[name]) {
-              console.warn(`좌표명 '${name}'은 이미 존재합니다.`);
-              return;
-            }
-
             const graphPoint = new THREE.Mesh(
                     new THREE.SphereGeometry(0.05),
                     new THREE.MeshBasicMaterial({ color: 0x000000 })
             );
 
-            graphPoint.position.set(x, y, z);
-            scene.add(graphPoint);
-            newTextarea.graphPoint = graphPoint;
+            if (!graphPoints[name]) {
+              graphPoint.position.set(x, y, z);
+              scene.add(graphPoint);
+              newTextarea.graphPoint = graphPoint;
 
-            graphPoints[name] = graphPoint;
+              graphPoints[name] = graphPoint;
+            }
+
           } else {
             if (newTextarea.graphPoint) {
               scene.remove(newTextarea.graphPoint);
