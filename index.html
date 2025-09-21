@@ -285,7 +285,7 @@
     <div class="navbar2">
       <div class="left-menu">
         <a href="#" data-content="선택">선택</a>
-        <a href="#" data-content="자르기">자르기</a>
+        <a href="#" data-content="회전">회전</a>
         <a href="#" data-content="자동 선택">자동 선택</a>
       </div>
       <div class="right-menu">
@@ -591,9 +591,6 @@
           scene.add(group);
           lineGroup = group; // 새 선분 그룹 저장
         }
-
-
-
 
         document.addEventListener("contextmenu", function (event) {
           event.preventDefault(); // 기본 우클릭 메뉴 방지
@@ -998,29 +995,100 @@
         console.log("버퍼 생성 완료!");
       }
 
+      let currentMode = "회전";
+      const graphPoints = [];
+      let lineGroup = null;
+
+      const raycaster = new THREE.Raycaster(undefined, undefined, 0, undefined);
+      const mouse = new THREE.Vector2();
+
       document.querySelectorAll('.navbar2 a').forEach(link => {
         link.addEventListener('click', function(event) {
           event.preventDefault();
           const selectedContent = this.dataset.content;
           switch (selectedContent) {
-            case "선택" :
-              const graphPoints = document.querySelectorAll(".graphPoint");
+            case "선택":
+              controls.enableRotate = false;
+              break;
+
+            case "회전":
+              controls.enableRotate = true;
+              break;
+
+            case "자동 선택":
+              controls.enableRotate = false;
               graphPoints.forEach(point => {
-                point.addEventListener("click", function () {
-                  document.querySelectorAll(".graphPoint.selected").forEach(p => p.classList.remove("selected"));
-                  point.classList.add("selected");
-                });
+                point.material.color.set(0x00ff00); // 초록색으로 자동 선택
               });
-              break;
-            case "자르기" :
-              break;
-            case "자동 선택" :
               break;
             default :
               break;
           }
         });
       });
+
+      window.addEventListener("click", (event) => {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(graphPoints);
+
+        if (currentMode === "선택") {
+          if (intersects.length > 0) {
+            graphPoints.forEach(p => p.material.color.set(0x000000)); // 전체 초기화
+            intersects[0].object.material.color.set(0xff0000); // 선택된 점 빨간색
+          }
+        } else if (currentMode === "회전") {
+          // 회전만 허용
+        } else {
+          // 점 생성 모드
+          const point = new THREE.Mesh(
+                  new THREE.SphereGeometry(0.05),
+                  new THREE.MeshBasicMaterial({ color: 0x000000 })
+          );
+
+          const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5).unproject(camera);
+          point.position.copy(vector);
+          scene.add(point);
+          graphPoints.push(point);
+
+          updateConnections();
+        }
+      });
+
+      function updateConnections() {
+        if (lineGroup) {
+          scene.remove(lineGroup);
+          lineGroup = null;
+        }
+
+        if (graphPoints.length < 2) return;
+
+        const group = new THREE.Group();
+
+        for (let i = 0; i < graphPoints.length - 1; i++) {
+          const p1 = graphPoints[i].position;
+          const p2 = graphPoints[i + 1].position;
+
+          const direction = new THREE.Vector3().subVectors(p2, p1);
+          const length = direction.length();
+          const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+
+          const geometry = new THREE.CylinderGeometry(0.005, 0.005, length, 8);
+          const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+          const line = new THREE.Mesh(geometry, material);
+
+          line.position.copy(midpoint);
+          line.lookAt(p2);
+          line.rotateX(Math.PI / 2);
+          group.add(line);
+        }
+
+        scene.add(group);
+        lineGroup = group;
+      }
+
     </script>
   </body>
 </html>
