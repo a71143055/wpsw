@@ -515,6 +515,14 @@
         const graphPoints = {};
 
         newTextarea.addEventListener("input", function (e) {
+          const value = e.target.value.trim();
+
+          // 좌표명 리스트인지 확인 (예: A1,B7,C3)
+          if (/^([A-Z]+\d+\s*(,\s*[A-Z]+\d+\s*)*)$/.test(value)) {
+            connectPointsByNames(value);
+            return;
+          }
+
           // 좌표 생성 처리 (예: A1(1,2,3))
           const regex = /([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
           const match = regex.exec(value);
@@ -541,14 +549,6 @@
               newTextarea.graphPoint = null;
             }
           }
-          const value = e.target.value.trim();
-
-          // 좌표명 리스트인지 확인 (예: A1,B7,C3)
-          if (/^([A-Z]+\d+\s*(,\s*[A-Z]+\d+\s*)*)$/.test(value)) {
-            connectPointsByNames(value);
-            return;
-          }
-
         });
 
 
