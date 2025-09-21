@@ -541,8 +541,8 @@
           const newPoints = [];
 
           matches.forEach(match => {
-            const x = parseFloat(match[1]);
-            const y = parseFloat(match[3]);
+            const x = parseFloat(match[3]);
+            const y = parseFloat(match[1]);
             const z = parseFloat(match[5]);
 
             const graphPoint = new THREE.Mesh(
