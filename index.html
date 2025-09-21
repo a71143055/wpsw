@@ -532,6 +532,7 @@
             lineGroup = null;
           }
 
+          // 좌표가 없으면 종료
           if (matches.length === 0) {
             console.warn("올바른 좌표 형식이 아닙니다.");
             return;
@@ -558,8 +559,12 @@
           connectPoints(newPoints);
         });
 
-
         function connectPoints(points) {
+          if (lineGroup) {
+            scene.remove(lineGroup); // 기존 선분 제거
+            lineGroup = null;
+          }
+
           if (points.length < 2) return;
 
           const group = new THREE.Group();
@@ -584,8 +589,9 @@
           }
 
           scene.add(group);
-          lineGroup = group; // 선분 그룹 저장
+          lineGroup = group; // 새 선분 그룹 저장
         }
+
 
 
 
