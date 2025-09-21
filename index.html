@@ -525,11 +525,11 @@
           }
 
           // 2️⃣ 좌표 생성 형식인지 확인 (예: A1(1,2,3))
-          const regex = /([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
-          const match = regex.exec(value);
+          const regex = /([A-Z]+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
+          const match = regex.exec(newTextarea.value);
 
           if (match) {
-            const name = match[1];
+            const name = match[1]; // 좌표명: A, B, PointA 등 (숫자 없음)
             const x = parseFloat(match[2]);
             const y = parseFloat(match[4]);
             const z = parseFloat(match[6]);
