@@ -517,43 +517,67 @@
         newTextarea.addEventListener("input", function (e) {
           const value = e.target.value.trim();
 
-          // 좌표명 리스트인지 확인 (예: A1,B7,C3)
-          if (/^([A-Z]+\d+\s*(,\s*[A-Z]+\d+\s*)*)$/.test(value)) {
-            connectPointsByNames(value);
+          // 좌표 리스트인지 확인: (x,y,z),(x,y,z),...
+          const pointRegex = /\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/g;
+          const matches = [...value.matchAll(pointRegex)];
+
+          if (matches.length === 0) {
+            console.warn("올바른 좌표 형식이 아닙니다.");
             return;
           }
 
-          // 좌표 생성 처리
-          const regex = /([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
-          const match = regex.exec(value);
+          // 기존 점 제거
+          graphPoints.forEach(p => scene.remove(p));
+          graphPoints.length = 0;
 
-          if (match) {
-            const name = match[1];
-            const x = parseFloat(match[2]);
-            const y = parseFloat(match[4]);
-            const z = parseFloat(match[6]);
+          const newPoints = [];
 
-            const existing = graphPoints.find(p => p.name === name);
-            if (!existing) {
-              const graphPoint = new THREE.Mesh(
-                      new THREE.SphereGeometry(0.05),
-                      new THREE.MeshBasicMaterial({ color: 0x000000 })
-              );
+          matches.forEach(match => {
+            const x = parseFloat(match[1]);
+            const y = parseFloat(match[3]);
+            const z = parseFloat(match[5]);
 
-              graphPoint.position.set(x, y, z);
-              scene.add(graphPoint);
-              newTextarea.graphPoint = graphPoint;
+            const graphPoint = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.05),
+                    new THREE.MeshBasicMaterial({ color: 0x000000 })
+            );
 
-              graphPoints.push({ name, graphPoint });
-            }
+            graphPoint.position.set(x, y, z);
+            scene.add(graphPoint);
+            newPoints.push(graphPoint);
+          });
 
-          } else {
-            if (newTextarea.graphPoint) {
-              scene.remove(newTextarea.graphPoint);
-              newTextarea.graphPoint = null;
-            }
-          }
+          graphPoints.push(...newPoints);
+
+          connectPoints(newPoints);
         });
+
+        function connectPoints(points) {
+          if (points.length < 2) return;
+
+          const group = new THREE.Group();
+
+          for (let i = 0; i < points.length - 1; i++) {
+            const p1 = points[i].position;
+            const p2 = points[i + 1].position;
+
+            const direction = new THREE.Vector3().subVectors(p2, p1);
+            const length = direction.length();
+            const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+
+            const geometry = new THREE.CylinderGeometry(0.02, 0.02, length, 8);
+            const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const line = new THREE.Mesh(geometry, material);
+
+            line.position.copy(midpoint);
+            line.lookAt(p2);
+            line.rotateX(Math.PI / 2);
+
+            group.add(line);
+          }
+
+          scene.add(group);
+        }
 
 
         document.addEventListener("contextmenu", function (event) {
@@ -594,47 +618,6 @@
             graphPoint.classList.add("selected");
           });
         }
-
-        function connectPointsByNames(inputText) {
-          const names = inputText.split(',').map(name => name.trim());
-
-          // 리스트에서 이름으로 점 찾기
-          const validPoints = names
-                  .map(name => {
-                    const entry = graphPoints.find(p => p.name === name);
-                    return entry ? entry.graphPoint : null;
-                  })
-                  .filter(point => point);
-
-          if (validPoints.length < 2) {
-            console.warn("연결 가능한 점이 2개 이상 있어야 합니다.");
-            return;
-          }
-
-          const group = new THREE.Group();
-
-          for (let i = 0; i < validPoints.length - 1; i++) {
-            const p1 = validPoints[i].position;
-            const p2 = validPoints[i + 1].position;
-
-            const direction = new THREE.Vector3().subVectors(p2, p1);
-            const length = direction.length();
-            const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
-
-            const geometry = new THREE.CylinderGeometry(0.02, 0.02, length, 8);
-            const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
-            const line = new THREE.Mesh(geometry, material);
-
-            line.position.copy(midpoint);
-            line.lookAt(p2);
-            line.rotateX(Math.PI / 2);
-
-            group.add(line);
-          }
-          scene.add(group);
-        }
-
-
 
         // 엔터 키로 새 입력칸 추가
         newTextarea.addEventListener("keydown", function(event) {
