@@ -523,7 +523,7 @@
             return;
           }
 
-          // 좌표 생성 처리 (예: A1(1,2,3))
+          // 좌표 생성 처리
           const regex = /([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
           const match = regex.exec(value);
 
@@ -532,6 +532,12 @@
             const x = parseFloat(match[2]);
             const y = parseFloat(match[4]);
             const z = parseFloat(match[6]);
+
+            // ✅ 중복 체크
+            if (graphPoints[name]) {
+              console.warn(`좌표명 '${name}'은 이미 존재합니다.`);
+              return;
+            }
 
             const graphPoint = new THREE.Mesh(
                     new THREE.SphereGeometry(0.05),
@@ -550,6 +556,7 @@
             }
           }
         });
+
 
 
         document.addEventListener("contextmenu", function (event) {
