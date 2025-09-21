@@ -577,7 +577,7 @@
             const length = direction.length();
             const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
 
-            const geometry = new THREE.CylinderGeometry(0.02, 0.02, length, 8);
+            const geometry = new THREE.CylinderGeometry(0.01, 0.01, length, 8);
             const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
             const line = new THREE.Mesh(geometry, material);
 
