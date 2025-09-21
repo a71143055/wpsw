@@ -519,7 +519,7 @@
           const value = e.target.value;
 
           // 좌표명 리스트인지 확인 (예: A1,B7,C3)
-          if (/^([A-Z]+\d+(,\s*[A-Z]+\d+)*)$/.test(value.trim())) {
+          if (/^([A-Z]+\d+\s*(,\s*[A-Z]+\d+\s*)*)$/.test(value.trim())) {
             connectPointsByNames(value);
             return;
           }
