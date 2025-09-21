@@ -513,6 +513,7 @@
         document.getElementById("left-slider-Content").appendChild(newTextarea);
 
         const graphPoints = [];
+        let lineGroup = null;
 
         newTextarea.addEventListener("input", function (e) {
           const value = e.target.value.trim();
@@ -521,21 +522,27 @@
           const pointRegex = /\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/g;
           const matches = [...value.matchAll(pointRegex)];
 
+          // 기존 점 제거
+          graphPoints.forEach(p => scene.remove(p));
+          graphPoints.length = 0;
+
+          // 기존 선분 제거
+          if (lineGroup) {
+            scene.remove(lineGroup);
+            lineGroup = null;
+          }
+
           if (matches.length === 0) {
             console.warn("올바른 좌표 형식이 아닙니다.");
             return;
           }
 
-          // 기존 점 제거
-          graphPoints.forEach(p => scene.remove(p));
-          graphPoints.length = 0;
-
           const newPoints = [];
 
           matches.forEach(match => {
-            const x = parseFloat(match[3]);
-            const y = parseFloat(match[5]);
-            const z = parseFloat(match[1]);
+            const x = parseFloat(match[1]);
+            const y = parseFloat(match[3]);
+            const z = parseFloat(match[5]);
 
             const graphPoint = new THREE.Mesh(
                     new THREE.SphereGeometry(0.05),
@@ -548,9 +555,9 @@
           });
 
           graphPoints.push(...newPoints);
-
           connectPoints(newPoints);
         });
+
 
         function connectPoints(points) {
           if (points.length < 2) return;
@@ -577,7 +584,9 @@
           }
 
           scene.add(group);
+          lineGroup = group; // 선분 그룹 저장
         }
+
 
 
         document.addEventListener("contextmenu", function (event) {
