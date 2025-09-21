@@ -512,7 +512,7 @@
         // 새로운 입력칸을 기존 입력창 아래에 추가
         document.getElementById("left-slider-Content").appendChild(newTextarea);
 
-        const graphPoints = {};
+        const graphPoints = [];
 
         newTextarea.addEventListener("input", function (e) {
           const value = e.target.value.trim();
@@ -533,17 +533,18 @@
             const y = parseFloat(match[4]);
             const z = parseFloat(match[6]);
 
-            const graphPoint = new THREE.Mesh(
-                    new THREE.SphereGeometry(0.05),
-                    new THREE.MeshBasicMaterial({ color: 0x000000 })
-            );
+            const existing = graphPoints.find(p => p.name === name);
+            if (!existing) {
+              const graphPoint = new THREE.Mesh(
+                      new THREE.SphereGeometry(0.05),
+                      new THREE.MeshBasicMaterial({ color: 0x000000 })
+              );
 
-            if (!graphPoints[name]) {
               graphPoint.position.set(x, y, z);
               scene.add(graphPoint);
               newTextarea.graphPoint = graphPoint;
 
-              graphPoints[name] = graphPoint;
+              graphPoints.push({ name, graphPoint });
             }
 
           } else {
@@ -553,6 +554,7 @@
             }
           }
         });
+
 
         document.addEventListener("contextmenu", function (event) {
           event.preventDefault(); // 기본 우클릭 메뉴 방지
