@@ -512,24 +512,23 @@
         // 새로운 입력칸을 기존 입력창 아래에 추가
         document.getElementById("left-slider-Content").appendChild(newTextarea);
 
-        const graphPoints = {}; // 좌표명 → 점 객체 저장
+        const graphPoints = {};
 
         newTextarea.addEventListener("input", function (e) {
           const value = e.target.value.trim();
 
-          // 1️⃣ 좌표명 리스트인지 확인 (예: A1,B7,C3)
-          const isCoordinateList = /^([A-Z]+\d+\s*(,\s*[A-Z]+\d+\s*)*)$/.test(value);
-          if (isCoordinateList) {
+          // 좌표명 리스트인지 확인 (예: A1,B7,C3)
+          if (/^([A-Z]+\d+\s*(,\s*[A-Z]+\d+\s*)*)$/.test(value)) {
             connectPointsByNames(value);
             return;
           }
 
-          // 2️⃣ 좌표 생성 형식인지 확인 (예: A1(1,2,3))
-          const regex = /([A-Z]+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
-          const match = regex.exec(newTextarea.value);
+          // 좌표 생성 처리 (예: A1(1,2,3))
+          const regex = /([A-Z]+\d+)\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/;
+          const match = regex.exec(value);
 
           if (match) {
-            const name = match[1]; // 좌표명: A, B, PointA 등 (숫자 없음)
+            const name = match[1];
             const x = parseFloat(match[2]);
             const y = parseFloat(match[4]);
             const z = parseFloat(match[6]);
@@ -551,6 +550,7 @@
             }
           }
         });
+
 
         document.addEventListener("contextmenu", function (event) {
           event.preventDefault(); // 기본 우클릭 메뉴 방지
