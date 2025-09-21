@@ -597,8 +597,13 @@
 
         function connectPointsByNames(inputText) {
           const names = inputText.split(',').map(name => name.trim());
+
+          // 리스트에서 이름으로 점 찾기
           const validPoints = names
-                  .map(name => graphPoints[name])
+                  .map(name => {
+                    const entry = graphPoints.find(p => p.name === name);
+                    return entry ? entry.graphPoint : null;
+                  })
                   .filter(point => point);
 
           if (validPoints.length < 2) {
@@ -616,21 +621,19 @@
             const length = direction.length();
             const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
 
-            const geometry = new THREE.CylinderGeometry(0.02, 0.02, length, 8); // 두께 0.02
+            const geometry = new THREE.CylinderGeometry(0.02, 0.02, length, 8);
             const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
             const line = new THREE.Mesh(geometry, material);
 
-            // 위치 및 방향 설정
             line.position.copy(midpoint);
             line.lookAt(p2);
             line.rotateX(Math.PI / 2);
 
             group.add(line);
-
           }
-
           scene.add(group);
         }
+
 
 
         // 엔터 키로 새 입력칸 추가
