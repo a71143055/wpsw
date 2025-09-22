@@ -305,7 +305,7 @@
         <div id="right-slider-Content"></div>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
     <script>
       const leftSlider = document.getElementById("left-slider");
       const leftSliderContent = document.getElementById("left-slider-Content");
@@ -659,7 +659,6 @@
       // === 애니메이션 루프 === //
       function animate() {
         requestAnimationFrame(animate);
-        controls.update();
         renderer.render(scene, camera);
       }
       animate();
