@@ -1069,28 +1069,29 @@
 
         const group = new THREE.Group();
 
-        for (let i = 0; i < graphPoints.length - 1; i++) {
-          const p1 = graphPoints[i].position;
-          const p2 = graphPoints[i + 1].position;
+        for (let i = 0; i < graphPoints.length; i++) {
+          for (let j = i + 1; j < graphPoints.length; j++) {
+            const p1 = graphPoints[i].position;
+            const p2 = graphPoints[j].position;
 
-          const direction = new THREE.Vector3().subVectors(p2, p1);
-          const length = direction.length();
-          const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+            const direction = new THREE.Vector3().subVectors(p2, p1);
+            const length = direction.length();
+            const midpoint = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
 
-          const geometry = new THREE.CylinderGeometry(0.005, 0.005, length, 8);
-          const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
-          const line = new THREE.Mesh(geometry, material);
+            const geometry = new THREE.CylinderGeometry(0.005, 0.005, length, 8);
+            const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const line = new THREE.Mesh(geometry, material);
 
-          line.position.copy(midpoint);
-          line.lookAt(p2);
-          line.rotateX(Math.PI / 2);
-          group.add(line);
+            line.position.copy(midpoint);
+            line.lookAt(p2);
+            line.rotateX(Math.PI / 2);
+            group.add(line);
+          }
         }
 
         scene.add(group);
         lineGroup = group;
       }
-
     </script>
   </body>
 </html>
