@@ -306,6 +306,7 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/examples/js/controls/OrbitControls.js"></script>
     <script>
       const leftSlider = document.getElementById("left-slider");
       const leftSliderContent = document.getElementById("left-slider-Content");
@@ -1007,7 +1008,7 @@
       const raycaster = new THREE.Raycaster(undefined, undefined, 0, undefined);
       const mouse = new THREE.Vector2();
 
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      const controls = new OrbitControls(camera, renderer.domElement);
 
       document.querySelectorAll('.navbar2 a').forEach(link => {
         link.addEventListener('click', function(event) {
