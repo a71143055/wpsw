@@ -383,25 +383,30 @@
       // === 마우스 드래그 이벤트 처리 (씬 회전) === //
       let isDragging = false;
       let previousMousePosition = { x: 0, y: 0 };
+      let allowSceneRotation = false;
 
       document.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        previousMousePosition = { x: e.clientX, y: e.clientY };
+        if (allowSceneRotation) {
+          isDragging = true;
+          previousMousePosition = { x: e.clientX, y: e.clientY };
+        }
       });
 
       document.addEventListener('mousemove', (e) => {
-        if (isDragging) {
+        if (isDragging && allowSceneRotation) {
           const deltaX = e.clientX - previousMousePosition.x;
           const deltaY = e.clientY - previousMousePosition.y;
-          // 회전 민감도 조절
+
           scene.rotation.y += deltaX * 0.005;
           scene.rotation.x += deltaY * 0.005;
+
           previousMousePosition = { x: e.clientX, y: e.clientY };
         }
       });
 
       document.addEventListener('mouseup', () => { isDragging = false; });
       document.addEventListener('mouseleave', () => { isDragging = false; });
+
 
       // === 마우스 휠 이벤트를 통한 그래프(씬) 스케일 조절 === //
       // canvas3D 크기는 그대로 두고, scene.scale만 변경합니다.
@@ -654,6 +659,7 @@
       // === 애니메이션 루프 === //
       function animate() {
         requestAnimationFrame(animate);
+        controls.update();
         renderer.render(scene, camera);
       }
       animate();
@@ -1002,26 +1008,30 @@
       const raycaster = new THREE.Raycaster(undefined, undefined, 0, undefined);
       const mouse = new THREE.Vector2();
 
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
       document.querySelectorAll('.navbar2 a').forEach(link => {
         link.addEventListener('click', function(event) {
           event.preventDefault();
           const selectedContent = this.dataset.content;
+
           switch (selectedContent) {
             case "선택":
-              canvas.enableRotate = false;
+              controls.enableRotate = false;
+              allowSceneRotation = false;
               break;
 
             case "회전":
-              canvas.enableRotate = true;
+              controls.enableRotate = true;
+              allowSceneRotation = true;
               break;
 
             case "자동 선택":
-              canvas.enableRotate = false;
-              graphPoints.forEach(point => {
-                point.material.color.set(0x00ff00); // 초록색으로 자동 선택
+              controls.enableRotate = false;
+              allowSceneRotation = false;
+              Object.values(graphPoints).forEach(point => {
+                point.material.color.set(0x00ff00);
               });
-              break;
-            default :
               break;
           }
         });
