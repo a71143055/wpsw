@@ -1008,15 +1008,15 @@
           const selectedContent = this.dataset.content;
           switch (selectedContent) {
             case "선택":
-              controls.enableRotate = false;
+              canvas3D.enableRotate = false;
               break;
 
             case "회전":
-              controls.enableRotate = true;
+              canvas3D.enableRotate = true;
               break;
 
             case "자동 선택":
-              controls.enableRotate = false;
+              canvas3D.enableRotate = false;
               graphPoints.forEach(point => {
                 point.material.color.set(0x00ff00); // 초록색으로 자동 선택
               });
