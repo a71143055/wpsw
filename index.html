@@ -1016,18 +1016,14 @@
 
           switch (selectedContent) {
             case "선택":
-              controls.enableRotate = false;
               allowSceneRotation = false;
               break;
 
             case "회전":
-              controls.enableRotate = true;
               allowSceneRotation = true;
               break;
 
             case "자동 선택":
-              controls.enableRotate = false;
-              allowSceneRotation = false;
               Object.values(graphPoints).forEach(point => {
                 point.material.color.set(0x00ff00);
               });
