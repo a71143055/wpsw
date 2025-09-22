@@ -284,6 +284,7 @@
     </div>
     <div class="navbar2">
       <div class="left-menu">
+        <a href="#" data-content="그룹화">그룹화</a>
         <a href="#" data-content="선택">선택</a>
         <a href="#" data-content="회전">회전</a>
         <a href="#" data-content="자동 선택">자동 선택</a>
@@ -1013,6 +1014,11 @@
           const selectedContent = this.dataset.content;
 
           switch (selectedContent) {
+
+            case "그룹화":
+              allowSceneRotation = false;
+              break;
+
             case "선택":
               allowSceneRotation = false;
               break;
