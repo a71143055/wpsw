@@ -1060,31 +1060,38 @@
       });
 
       function enablePointSelection() {
-        let selectedPoints = [];
+        selectedPoints = [];
 
-        graphPoints.forEach(point => {
-          point.userData.isSelectable = true;
+        // 이벤트 중복 등록 방지
+        window.removeEventListener('click', onMouseClick);
+        window.addEventListener('click', onMouseClick);
 
-          point.onClick = () => {
-            if (selectedPoints.includes(point)) {
-              // 선택 해제
-              selectedPoints = selectedPoints.filter(p => p !== point);
-              point.material.color.set(0x000000);
+        function onMouseClick(event) {
+          mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+          mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+          raycaster.setFromCamera(mouse, camera);
+          const intersects = raycaster.intersectObjects(graphPoints);
+
+          if (intersects.length > 0) {
+            const clickedPoint = intersects[0].object;
+
+            if (selectedPoints.includes(clickedPoint)) {
+              selectedPoints = selectedPoints.filter(p => p !== clickedPoint);
+              clickedPoint.material.color.set(0xffffff);
             } else {
               if (selectedPoints.length >= 2) return;
 
-              selectedPoints.push(point);
-              point.material.color.set(0x000000);
+              selectedPoints.push(clickedPoint);
+              clickedPoint.material.color.set(0xff0000);
 
               if (selectedPoints.length === 2) {
-                updateConnections(); // 두 점 선택 완료 → 연결 실행
+                updateConnections();
               }
             }
-          };
-        });
+          }
+        }
       }
-
-
 
       function updateConnections() {
         if (lineGroup) {
