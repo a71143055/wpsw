@@ -1059,6 +1059,32 @@
         }
       });
 
+      function enablePointSelection() {
+        let selectedPoints = [];
+
+        graphPoints.forEach(point => {
+          point.userData.isSelectable = true;
+
+          point.onClick = () => {
+            if (selectedPoints.includes(point)) {
+              // 선택 해제
+              selectedPoints = selectedPoints.filter(p => p !== point);
+              point.material.color.set(0x000000);
+            } else {
+              if (selectedPoints.length >= 2) return;
+
+              selectedPoints.push(point);
+              point.material.color.set(0x000000);
+
+              if (selectedPoints.length === 2) {
+                updateConnections(); // 두 점 선택 완료 → 연결 실행
+              }
+            }
+          };
+        });
+      }
+
+
       function updateConnections() {
         if (lineGroup) {
           scene.remove(lineGroup);
