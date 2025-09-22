@@ -1007,8 +1007,6 @@
       const raycaster = new THREE.Raycaster(undefined, undefined, 0, undefined);
       const mouse = new THREE.Vector2();
 
-      const controls = new THREE.TrackballControls(camera, renderer.domElement);
-
       document.querySelectorAll('.navbar2 a').forEach(link => {
         link.addEventListener('click', function(event) {
           event.preventDefault();
