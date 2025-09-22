@@ -1059,17 +1059,22 @@
         }
       });
 
-      let selectedPoints = []; // 전역으로 선언
+      // 전역 변수 선언
+      let selectedPoints = [];
 
+      // 점 선택 활성화 함수
       function enablePointSelection() {
         selectedPoints = [];
 
+        // 이벤트 중복 등록 방지
         window.removeEventListener('click', onMouseClick);
         window.addEventListener('click', onMouseClick);
 
         function onMouseClick(event) {
-          mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-          mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+          // 마우스 좌표 계산 (캔버스 기준)
+          const rect = renderer.domElement.getBoundingClientRect();
+          mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+          mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
           raycaster.setFromCamera(mouse, camera);
           const intersects = raycaster.intersectObjects(graphPoints);
@@ -1078,6 +1083,7 @@
             const clickedPoint = intersects[0].object;
 
             if (selectedPoints.includes(clickedPoint)) {
+              // 선택 해제
               selectedPoints = selectedPoints.filter(p => p !== clickedPoint);
               clickedPoint.material.color.set(0xffffff);
             } else {
@@ -1087,20 +1093,21 @@
               clickedPoint.material.color.set(0xff0000);
 
               if (selectedPoints.length === 2) {
-                updateConnections(); // 선택된 두 점 연결
+                updateConnections(); // 두 점 선택 완료 → 연결 실행
               }
             }
           }
         }
       }
 
+      // 두 점 연결 함수
       function updateConnections() {
         if (lineGroup) {
           scene.remove(lineGroup);
           lineGroup = null;
         }
 
-        if (selectedPoints.length !== 2) return; // 선택된 두 점이 있어야 실행
+        if (selectedPoints.length !== 2) return;
 
         const p1 = selectedPoints[0].position;
         const p2 = selectedPoints[1].position;
@@ -1117,14 +1124,10 @@
         line.lookAt(p2);
         line.rotateX(Math.PI / 2);
 
-        const group = new THREE.Group();
-        group.add(line);
-
-        scene.add(group);
-        lineGroup = group;
+        lineGroup = new THREE.Group();
+        lineGroup.add(line);
+        scene.add(lineGroup);
       }
-
-
     </script>
   </body>
 </html>
