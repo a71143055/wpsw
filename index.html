@@ -486,29 +486,20 @@
         });
 
         deleteButton.addEventListener("click", function () {
-          const container = deleteButton.closest(".coordinate-container");
-          const textarea = container.querySelector(".coordinate-input");
-
-          // 해당 textarea의 점 제거
-          if (textarea.graphPoints) {
-            textarea.graphPoints.forEach(p => scene.remove(p));
-            textarea.graphPoints.length = 0;
-          }
-
-          // 선분 제거
-          if (textarea.lineGroup) {
-            scene.remove(textarea.lineGroup);
-            textarea.lineGroup = null;
-          }
-
-          const allContainers = document.querySelectorAll(".coordinate-container");
-          if (allContainers.length > 1) {
-            container.remove();
+          const allTextareas = document.querySelectorAll(".coordinate-input");
+          if (allTextareas.length > 1) {
+            if (newTextarea.graphPoint) {
+              scene.remove(newTextarea.graphPoint);
+            }
+            newTextarea.remove()
+            deleteButton.remove();
           } else {
-            textarea.value = "";
+            newTextarea.value = ""; // 마지막 남은 입력칸은 초기화만 수행
+            if (newTextarea.graphPoint) {
+              scene.remove(newTextarea.graphPoint);
+            }
           }
         });
-
 
         newTextarea.addEventListener("keydown", function (event) {
           if (event.key === "Backspace" && newTextarea.value === "") {
@@ -532,21 +523,22 @@
 
         newTextarea.addEventListener("input", function (e) {
           const value = e.target.value.trim();
+
+          // 좌표 리스트인지 확인: (x,y,z),(x,y,z),...
           const pointRegex = /\((-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)\)/g;
           const matches = [...value.matchAll(pointRegex)];
 
           // 기존 점 제거
-          if (newTextarea.graphPoints) {
-            newTextarea.graphPoints.forEach(p => scene.remove(p));
-            newTextarea.graphPoints.length = 0;
-          }
+          graphPoints.forEach(p => scene.remove(p));
+          graphPoints.length = 0;
 
           // 기존 선분 제거
-          if (newTextarea.lineGroup) {
-            scene.remove(newTextarea.lineGroup);
-            newTextarea.lineGroup = null;
+          if (lineGroup) {
+            scene.remove(lineGroup);
+            lineGroup = null;
           }
 
+          // 좌표가 없으면 종료
           if (matches.length === 0) {
             console.warn("올바른 좌표 형식이 아닙니다.");
             return;
@@ -569,12 +561,9 @@
             newPoints.push(graphPoint);
           });
 
-          newTextarea.graphPoints.push(...newPoints);
-
-          const lineGroup = connectPoints(newPoints);
-          newTextarea.lineGroup = lineGroup;
+          graphPoints.push(...newPoints);
+          connectPoints(newPoints);
         });
-
 
         function connectPoints(points) {
           if (lineGroup) {
