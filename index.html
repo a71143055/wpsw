@@ -1059,10 +1059,11 @@
         }
       });
 
-      function enablePointSelection() {
-        let selectedPoints = [];
+      let selectedPoints = []; // 전역으로 선언
 
-        // 이벤트 중복 등록 방지
+      function enablePointSelection() {
+        selectedPoints = [];
+
         window.removeEventListener('click', onMouseClick);
         window.addEventListener('click', onMouseClick);
 
@@ -1086,7 +1087,7 @@
               clickedPoint.material.color.set(0xff0000);
 
               if (selectedPoints.length === 2) {
-                updateConnections();
+                updateConnections(); // 선택된 두 점 연결
               }
             }
           }
@@ -1099,10 +1100,10 @@
           lineGroup = null;
         }
 
-        if (graphPoints.length !== 2) return; // 정확히 두 점이 선택된 경우만 실행
+        if (selectedPoints.length !== 2) return; // 선택된 두 점이 있어야 실행
 
-        const p1 = graphPoints[0].position;
-        const p2 = graphPoints[1].position;
+        const p1 = selectedPoints[0].position;
+        const p2 = selectedPoints[1].position;
 
         const direction = new THREE.Vector3().subVectors(p2, p1);
         const length = direction.length();
@@ -1122,6 +1123,7 @@
         scene.add(group);
         lineGroup = group;
       }
+
 
     </script>
   </body>
