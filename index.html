@@ -489,6 +489,7 @@
           const allTextareas = document.querySelectorAll(".coordinate-input");
           if (allTextareas.length > 1) {
             if (newTextarea.graphPoint) {
+              wrapper.remove();
               scene.remove(newTextarea.graphPoint);
             }
             newTextarea.remove()
@@ -496,6 +497,7 @@
           } else {
             newTextarea.value = ""; // 마지막 남은 입력칸은 초기화만 수행
             if (newTextarea.graphPoint) {
+              wrapper.remove();
               scene.remove(newTextarea.graphPoint);
             }
           }
